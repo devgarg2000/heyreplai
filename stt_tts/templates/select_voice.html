@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Voice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .voice-list {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #2b2b2b;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .voice-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #3e3e3e;
+        }
+
+        .voice-item:last-child {
+            border-bottom: none;
+        }
+
+        .voice-item label {
+            margin-right: 20px;
+            font-size: 18px;
+        }
+
+        .play-button {
+            background-color: #ff5722;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .play-button:hover {
+            background-color: #e64a19;
+        }
+
+        .submit-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+        }
+
+        .submit-button:hover {
+            background-color: #45a049;
+        }
+
+        .audio-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 10px;
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            .voice-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .play-button {
+                margin-top: 10px;
+            }
+        }
+    </style>
+
+    <script>
+
+        function playSample(voiceId) {
+            const url = `/play_sample/${voiceId}`;
+            const audioPlayer = document.getElementById('audio-player');
+            const audioSource = document.getElementById('audio-source');
+            audioSource.src = url;
+            audioPlayer.load();
+            audioPlayer.play();
+        }
+    </script>
+</head>
+
+<body>
+
+    <h1>Select a Voice</h1>
+
+    <div class="voice-list">
+        <form action="/convert" method="POST">
+            <input type="hidden" name="transcript" value="{{ transcript }}">
+
+            {% for voice in voices %}
+            <div class="voice-item">
+                <label>
+                    <input type="radio" name="voice_id" value="{{ voice['voice_id'] }}" required>
+                    {{ voice['name'] }}
+                </label>
+                <button type="button" class="play-button" onclick="playSample('{{ voice['voice_id'] }}')">Play
+                    Sample</button>
+            </div>
+            {% endfor %}
+
+
+            <button type="submit" class="submit-button">Convert to Speech</button>
+        </form>
+    </div>
+
+    <!-- Audio player to play the voice sample -->
+    <div class="audio-container">
+        <audio id="audio-player" controls>
+            <source id="audio-source" src="" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+</body>
+
+</html>
